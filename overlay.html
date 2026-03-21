@@ -8,6 +8,9 @@
 </head>
 <body>
 
+  <!-- Fullscreen background (image mode only, sits behind the card) -->
+  <div id="bg-layer" class="hidden"></div>
+
   <div id="verse-container" class="hidden theme-gold pos-bottom fs-md anim-fade">
     <div id="verse-inner">
       <p id="overlay-text"></p>
@@ -19,6 +22,7 @@
   <script src="assets/app.js"></script>
   <script>
     (() => {
+      const bgLayer   = document.getElementById('bg-layer');
       const container = document.getElementById('verse-container');
       const inner     = document.getElementById('verse-inner');
       const textEl    = document.getElementById('overlay-text');
@@ -29,7 +33,7 @@
       const SIZE_CLASSES  = ['fs-sm', 'fs-md', 'fs-lg', 'fs-xl'];
       const ANIM_CLASSES  = ['anim-fade', 'anim-slide', 'anim-none'];
 
-      // Base background colours for preset themes (JS sets bg with opacity)
+      // Base card background colours per preset theme
       const THEME_BG = { gold: '#080810', white: '#ffffff', dark: '#0a0e14' };
 
       const loadedFonts = new Set();
@@ -60,30 +64,31 @@
       }
 
       function applyStyles(state) {
-        const theme     = state.theme     || 'gold';
-        const opacity   = (state.opacity !== undefined ? state.opacity : 90) / 100;
-        const font      = state.font      || 'Georgia';
-        const bgMode    = state.bgMode    || 'color';
-        const colors    = state.customColors || BibleApp.DEFAULTS.customColors;
+        const theme   = state.theme   || 'gold';
+        const opacity = (state.opacity !== undefined ? state.opacity : 90) / 100;
+        const font    = state.font    || 'Georgia';
+        const bgMode  = state.bgMode  || 'color';
+        const colors  = state.customColors || BibleApp.DEFAULTS.customColors;
 
         applyClass(THEME_CLASSES, `theme-${theme}`);
         applyClass(POS_CLASSES,   `pos-${state.position}`);
         applyClass(SIZE_CLASSES,  `fs-${state.fontSize}`);
         applyClass(ANIM_CLASSES,  `anim-${state.animation}`);
 
-        // ── Background (opacity-aware) ──────────────────────────
+        // ── Background image (fullscreen layer, independent of card) ──
         if (bgMode === 'image' && state.bgImage) {
-          inner.style.background      = '';
-          inner.style.backgroundImage = `url(${state.bgImage})`;
-          inner.style.backgroundSize  = 'cover';
-          inner.style.backgroundPosition = 'center';
+          bgLayer.style.backgroundImage = `url(${state.bgImage})`;
+          bgLayer.classList.remove('hidden');
         } else {
-          const bgHex = theme === 'custom' ? colors.bg : (THEME_BG[theme] || '#080810');
-          inner.style.backgroundImage = '';
-          inner.style.background      = hexToRgba(bgHex, opacity);
+          bgLayer.style.backgroundImage = '';
+          bgLayer.classList.add('hidden');
         }
 
-        // ── Custom colours (text/reference) ────────────────────
+        // ── Card background (always the semi-transparent colour) ──────
+        const bgHex = theme === 'custom' ? colors.bg : (THEME_BG[theme] || '#080810');
+        inner.style.background = hexToRgba(bgHex, opacity);
+
+        // ── Custom text colours ───────────────────────────────────────
         if (theme === 'custom') {
           textEl.style.color = colors.text || '#ffffff';
           refEl.style.color  = colors.ref  || '#cccccc';
@@ -94,7 +99,7 @@
           inner.style.removeProperty('--accent-color');
         }
 
-        // ── Font ────────────────────────────────────────────────
+        // ── Font ──────────────────────────────────────────────────────
         ensureFont(font);
         inner.style.fontFamily = `'${font}', Georgia, 'Times New Roman', serif`;
       }
@@ -106,7 +111,7 @@
 
         container.classList.remove('hidden');
         container.classList.remove('visible');
-        void container.offsetHeight; // force reflow
+        void container.offsetHeight; // force reflow for CSS transition
         container.classList.add('visible');
       }
 
@@ -114,16 +119,22 @@
         applyStyles(state);
         container.classList.remove('visible');
 
-        const fallback = setTimeout(() => container.classList.add('hidden'), 650);
+        const fallback = setTimeout(() => {
+          container.classList.add('hidden');
+          bgLayer.classList.add('hidden');
+        }, 650);
+
         container.addEventListener('transitionend', () => {
           clearTimeout(fallback);
           container.classList.add('hidden');
+          bgLayer.classList.add('hidden');
         }, { once: true });
       }
 
       function clearVerse() {
         container.classList.remove('visible');
         container.classList.add('hidden');
+        bgLayer.classList.add('hidden');
         textEl.textContent = '';
         refEl.textContent  = '';
       }

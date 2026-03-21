@@ -38,13 +38,15 @@ const BibleApp = (() => {
 
   // ── Church-appropriate Google Fonts ──────────────────────────────────────
   const CHURCH_FONTS = [
-    { label: 'Georgia (Default)',      value: 'Georgia',            google: false },
-    { label: 'EB Garamond',            value: 'EB Garamond',        google: true  },
-    { label: 'Cinzel',                 value: 'Cinzel',             google: true  },
-    { label: 'Playfair Display',       value: 'Playfair Display',   google: true  },
-    { label: 'Lora',                   value: 'Lora',               google: true  },
-    { label: 'Cormorant Garamond',     value: 'Cormorant Garamond', google: true  },
-    { label: 'Crimson Text',           value: 'Crimson Text',       google: true  },
+    { label: 'Open Sans (Default)',    value: 'Open Sans',               google: true  },
+    { label: 'Atkinson Hyperlegible', value: 'Atkinson Hyperlegible',   google: true  },
+    { label: 'Georgia',                value: 'Georgia',                 google: false },
+    { label: 'EB Garamond',            value: 'EB Garamond',             google: true  },
+    { label: 'Cinzel',                 value: 'Cinzel',                  google: true  },
+    { label: 'Playfair Display',       value: 'Playfair Display',        google: true  },
+    { label: 'Lora',                   value: 'Lora',                    google: true  },
+    { label: 'Cormorant Garamond',     value: 'Cormorant Garamond',      google: true  },
+    { label: 'Crimson Text',           value: 'Crimson Text',            google: true  },
   ];
 
   const DEFAULTS = Object.freeze({
@@ -58,7 +60,7 @@ const BibleApp = (() => {
     visible:      false,
     timestamp:    0,
     opacity:      90,
-    font:         'Georgia',
+    font:         'Open Sans',
     bgMode:       'color',
     bgImage:      null,
     customColors: { bg: '#080810', text: '#f0e6c4', ref: '#c9a84c' },

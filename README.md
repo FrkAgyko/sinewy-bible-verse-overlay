@@ -1,176 +1,278 @@
 # OBS Bible Verse Plugin
 
-A lightweight, browser-based Bible verse lower-third for OBS Studio — no installation required. Runs entirely from local HTML files: a control dock for the operator and a transparent overlay for the stream.
+### Display Scripture on your church livestream — no coding required.
 
-![Classic Gold theme screenshot](https://img.shields.io/badge/theme-Classic%20Gold-gold) ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
+A free, open-source tool for OBS Studio that lets you show Bible verses on your livestream with a single click. You get a control panel docked inside OBS where you type a reference, choose your style, and press **Show**. The verse appears instantly on your stream as a beautiful lower-third overlay. No servers, no subscriptions, no technical setup beyond copying a folder.
 
----
-
-## ☕ Support This Project
-
-If this plugin has helped your church or ministry, consider buying me a coffee!
-Feature requests from supporters get prioritised.
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/sinewytech)
+![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
 ---
 
+<!-- Add screenshots here -->
+
+---
 
 ## Features
 
-- Type a reference (e.g. `John 3:16`) and look it up instantly via the free [bible-api.com](https://bible-api.com) API
-- Editable verse text — override or add content before going live
-- **Three themes**: Classic Gold (dark background, gold accents), Clean White (semi-opaque white card), Dark Minimal (dark glass)
-- **Three positions**: Bottom, Center, Top of screen
-- **Three font sizes** and **three animations**: Fade, Slide Up, or None
-- Instant Show / Hide / Clear controls
-- Settings persist between sessions via `localStorage`
-- Overlay auto-restores if the browser source is refreshed mid-stream
-- No build step. No server. No dependencies.
+- **Smart verse search** — start typing a book name and a dropdown suggests matching books automatically
+- **Instant lookup** — type any reference (e.g. `John 3:16`) and fetch the verse text with one click or press Enter
+- **Editable text** — change, shorten, or add to the verse text before it goes live on stream
+- **Next / Previous navigation** — step through consecutive verses without retyping anything
+- **Random verse generator** — pick a random verse from the Entire Bible, Old Testament, New Testament, Gospels only, or Psalms & Proverbs
+- **4 preset themes** — Classic Gold, Clean White, Dark Minimal, and Sacred Light (background image with text floating freely)
+- **Custom theme** — choose your own background colour, verse text colour, and reference text colour with a full colour picker
+- **Background image upload** — upload any photo as a fullscreen background behind your verse card
+- **Card overlay toggle** — hide the dark card so verse text sits directly on your background image with a clean look
+- **Opacity slider** — control how solid or transparent the card background is, from 0% to 100%
+- **Font selector** — choose from 9 fonts including Open Sans (default), Atkinson Hyperlegible (designed for low vision), EB Garamond, Cinzel, Playfair Display, Lora, Cormorant Garamond, and Crimson Text
+- **Font size control** — Small, Medium, Large, or X-Large
+- **3 positions** — Bottom (default), Center, or Top of screen
+- **3 animation styles** — Fade, Slide Up, or None
+- **Keyboard shortcuts** — control everything from your keyboard without touching the mouse
+- **Multiple Bible translations** — KJV (default), WEB, and ASV
+- **Settings are remembered** — all your choices are saved automatically and restored next time you open OBS
+- **No internet required for display** — once a verse is loaded, the overlay works offline
 
 ---
 
-## Requirements
+## What You Need Before Starting
 
-- **OBS Studio 28+** (shares a single Chromium process — required for real-time communication)
-- **Internet connection** for verse lookup (manual text entry works offline)
-
----
-
-## Quick Start
-
-### Step 1 — Add the Overlay (Browser Source)
-
-1. In OBS, click **+** under Sources → choose **Browser Source**
-2. Check **Local File**, then browse to `overlay.html` in this folder
-3. Set **Width: 1920**, **Height: 1080**
-4. Uncheck **Shutdown source when not visible** ← important
-5. Uncheck **Refresh browser when scene becomes active** ← important
-6. Click OK
-
-> The overlay must always be running to receive commands from the dock. Add it to every scene where you need it, or put it in a global scene collection.
-
-### Step 2 — Add the Control Dock
-
-1. In OBS, go to **Docks → Custom Browser Docks…**
-2. Click **+** and set:
-   - **Dock Name**: Bible Verses
-   - **URL**: `file:///` followed by the full path to `index.html`
-     - macOS example: `file:///Users/yourname/Documents/sinewy-obs-bible-verse/index.html`
-     - Windows example: `file:///C:/Users/yourname/Desktop/sinewy-obs-bible-verse/index.html`
-3. Click **Apply** — the dock will appear as a panel in OBS
-
-### Step 3 — Using During a Service
-
-1. Type a verse reference in the **Verse Lookup** field (e.g. `Psalm 23:1`)
-2. Choose your translation (KJV default)
-3. Click **Lookup** or press **Enter**
-4. The verse text fills in automatically — edit it freely if needed
-5. Adjust theme, position, size, and animation in **Display Settings**
-6. Click **Show** — the verse appears on stream instantly
-7. Click **Hide** to fade it out without clearing
-8. Click **Clear** to reset everything
+- **OBS Studio version 28 or newer** — [download free at obsproject.com](https://obsproject.com)
+- **An internet connection** when looking up verses (the verse text itself is fetched from the web)
+- The plugin folder saved somewhere on your computer
 
 ---
 
-## Translations
+## Installation
 
-| Code | Name | Notes |
-|------|------|-------|
-| `KJV` | King James Version | Most common in churches; default |
-| `WEB` | World English Bible | Modern language; fully public domain |
-| `ASV` | American Standard Version (1901) | Public domain |
+### Step 1 — Download the plugin
 
-> NIV, ESV, and NLT are copyrighted and not available through the free API. For those translations, type or paste the verse text manually.
+1. Go to the GitHub page for this project
+2. Click the green **Code** button, then click **Download ZIP**
+3. Find the downloaded ZIP file (usually in your Downloads folder)
+4. Right-click it and choose **Extract All** (Windows) or double-click to unzip (Mac)
+5. Move the extracted folder somewhere permanent — for example, your **Documents** folder
+   > ⚠️ Do not move or rename any files inside the folder after this step. The plugin needs all its files to stay together.
 
 ---
 
-## Reference Formats
+### Step 2 — Add the control panel to OBS
 
-The API accepts standard references:
+The control panel is the window inside OBS where you type references and control what appears on stream.
 
-| Input | Result |
-|-------|--------|
-| `John 3:16` | Single verse |
-| `John 3:16-17` | Verse range |
-| `Ps 23` | Full chapter |
-| `1 Cor 13:4-7` | Multi-verse range |
-| `Genesis 1:1` | Full book name works too |
+1. Open **OBS Studio**
+2. In the top menu bar, click **Docks**, then click **Custom Browser Docks…**
+3. A small window will appear. Click the **+** button (or type in the Name field)
+4. Set the **Dock Name** to: `Bible Verse`
+5. Set the **URL** to the full file path of `index.html` inside the folder you extracted
+
+   **How to find the full path:**
+
+   - **Windows:** Open File Explorer, navigate to the folder, hold Shift and right-click `index.html`, then choose **Copy as path**. Paste it into the URL field, then replace any backslashes `\` with forward slashes `/`, and make sure it starts with `file:///`
+     - Example: `file:///C:/Users/YourName/Documents/sinewy-obs-bible-verse/index.html`
+
+   - **Mac:** Open Finder, navigate to the folder, right-click `index.html`, hold the Option key, then choose **Copy "index.html" as Pathname**. Paste it into the URL field and add `file://` to the front
+     - Example: `file:///Users/YourName/Documents/sinewy-obs-bible-verse/index.html`
+
+6. Click **Apply**
+7. The **Bible Verse** panel will appear as a dockable window inside OBS. You can drag it to any position in your OBS layout.
+
+---
+
+### Step 3 — Add the overlay to your scene
+
+The overlay is the transparent layer that sits on top of your video and displays the verse text on stream.
+
+1. In OBS, select the scene you want to add the verses to (or add it to all scenes — see tip below)
+2. In the **Sources** panel, click the **+** button
+3. Choose **Browser** from the list
+4. Give it a name like `Bible Verse Overlay` and click **OK**
+5. In the properties window that opens:
+   - Tick **Local file**
+   - Click **Browse** and select `overlay.html` from the plugin folder
+   - Set **Width** to `1920`
+   - Set **Height** to `1080`
+   - Make sure **Shutdown source when not visible** is **unticked** ← this is important
+   - Make sure **Refresh browser when scene becomes active** is **unticked** ← this is important
+6. Click **OK**
+
+> 💡 **Tip:** If you want the overlay available in every scene, add it to a **Scene Collection** that is applied globally, or copy the source across all your scenes by right-clicking it and choosing **Copy**, then pasting into each scene.
+
+---
+
+## How to Use It During a Service
+
+### Looking up a verse
+
+1. In the **Bible Verse** dock panel, click the reference box at the top (it says *e.g. John 3:16*)
+2. Start typing a book name — a dropdown will suggest matching books. Click one to select it, or keep typing
+3. Type the full reference, e.g. `Romans 8:28` or `Psalm 23:1-3`
+4. Choose your translation from the dropdown next to the reference box (KJV is the default)
+5. Click **Lookup** or press **Enter**
+6. The verse text appears in the text box below. You can edit it if you want — for example, to shorten a long verse
+7. Click **Show** to send it to the stream
+
+### Using the Random Verse button
+
+1. Click the **🎲 Random** button next to the Lookup button
+2. A small menu will appear with five options:
+   - **📖 Entire Bible** — any verse from Genesis to Revelation
+   - **📜 Old Testament** — Genesis through Malachi
+   - **✝ New Testament** — Matthew through Revelation
+   - **🕊 Gospels only** — Matthew, Mark, Luke, or John
+   - **🎵 Psalms & Proverbs** — a verse from Psalms or Proverbs
+3. Click your chosen option — a verse is fetched and loaded automatically
+4. Click **Show** to send it to the stream
+
+### Navigating verses
+
+Once a verse is loaded, use the **◀** and **▶** buttons to step backwards or forwards one verse at a time. The verse text updates automatically. If the overlay is already showing, it updates live on stream.
+
+### Showing and hiding the overlay
+
+| Button | What it does |
+|--------|-------------|
+| **Show** | Sends the verse to the stream with your chosen animation |
+| **Hide** | Fades the verse out but keeps it ready to show again |
+| **Clear** | Removes the verse completely and resets everything |
+
+### Changing the look
+
+All display settings are in the **Display Settings** section of the dock panel.
+
+| Setting | What it does |
+|---------|-------------|
+| **Font** | Choose the typeface for the verse text |
+| **Font Size** | Small, Medium, Large, or X-Large |
+| **Theme** | Choose a colour style (see Themes section below) |
+| **Position** | Where on screen the verse appears — Bottom, Center, or Top |
+| **Animation** | How the verse enters — Fade, Slide Up, or None |
+| **Background Opacity** | Drag the slider to make the card more or less transparent |
+
+Any change you make while the overlay is showing will update live on stream immediately.
 
 ---
 
 ## Themes
 
 ### Classic Gold
-Dark, semi-transparent background with gold border and warm cream text. Best for traditional church settings and darker scene backgrounds.
+A dark semi-transparent card with a gold top border and warm cream-coloured text. Italic verse text. Best for traditional church settings or when your camera background is dark.
 
 ### Clean White
-White semi-opaque card with a blue left border. Readable on any background. Good for contemporary and modern church aesthetics.
+A white semi-transparent card with a blue accent border. Dark text. Works well on any background and suits contemporary or modern church styles.
 
 ### Dark Minimal
-Dark glass panel with a subtle slate border. Clean and unobtrusive. Good for conferences and modern productions.
+A dark glass card with a subtle grey border. Light text. Clean and understated — good for conferences and modern productions.
+
+### Sacred Light
+Your `assets/bg1.png` image fills the entire screen edge to edge. There is no dark card — the verse text floats directly over the image in white with a warm gold reference. Select this theme and your background image appears automatically with no extra steps.
+
+### Custom
+Choose your own colours. When you select **Custom…** from the Theme dropdown, three extra options appear:
+
+- **Background**, **Verse Text**, and **Reference** colour pickers — click each square to open a colour chooser
+- **Show card overlay on background** checkbox — tick this to show a semi-transparent dark card behind your text, or leave it unticked for text-only on a plain or image background
+- **Background Mode** toggle — switch between **Colour** (solid card) and **Image** (upload your own photo)
+
+**To upload a background image:**
+1. Select **Custom…** theme
+2. Click the **Image** toggle button
+3. Click **Choose Image** and pick a photo from your computer
+4. The image is applied to the overlay immediately
+
+---
+
+## Keyboard Shortcuts
+
+You can control the overlay from your keyboard without clicking. These shortcuts work when your cursor is not inside a text box.
+
+| Key | Action |
+|-----|--------|
+| `←` Left arrow | Previous verse |
+| `→` Right arrow | Next verse |
+| `Esc` | Hide the overlay |
+| `Ctrl` + `Enter` (inside the text box) | Show the verse on stream |
+
+---
+
+## Bible Translations
+
+| Translation | Full Name | Notes |
+|-------------|-----------|-------|
+| KJV | King James Version | Default. Most widely used in churches |
+| WEB | World English Bible | Modern language. Completely free to use |
+| ASV | American Standard Version | Classic 1901 translation. Free to use |
+
+> **Note:** NIV, ESV, and NLT are copyright protected and not available through the free verse lookup service. If you use one of these translations in your church, you can still type or paste the verse text manually into the text box after looking up the reference.
+
+---
+
+## Reference Format Guide
+
+| What you type | What you get |
+|---------------|-------------|
+| `John 3:16` | A single verse |
+| `John 3:16-17` | Two verses in a row |
+| `Ps 23:1-3` | Verses 1 to 3 of Psalm 23 |
+| `1 Cor 13:4` | First Corinthians chapter 13 verse 4 |
+| `Genesis 1:1` | Full book names work too |
+
+Most common abbreviations are accepted — `Ps`, `Rev`, `Matt`, `1 Cor`, `Phil`, etc.
 
 ---
 
 ## Troubleshooting
 
-### Overlay not responding to dock commands
+### The overlay is not showing on stream
 
-- Verify both files are in the **same folder** and loaded from the same `file://` origin
-- Confirm you are using **OBS Studio 28 or newer** (`Help → About OBS Studio`)
-- In the Browser Source properties, check that **Shutdown source when not visible** is **OFF**
-- Try clicking **Refresh** in the Browser Source right-click menu, then re-send from the dock
+- Make sure the Browser Source is in your active scene and is **not muted or hidden** (check the eye icon next to it in the Sources panel)
+- Right-click the Browser Source in the Sources panel and choose **Refresh** — then try pressing Show again from the dock
 
-### Verse text not loading
+### The dock panel shows a blank page
 
-- Check your internet connection (bible-api.com requires network access)
-- Verify the reference format: `Book Chapter:Verse` (e.g. `Romans 8:28`)
-- Try abbreviations: `Ps` for Psalms, `Rev` for Revelation, `1 Cor` for 1 Corinthians
-- If the API is down, type the verse text manually in the text area
+- Check the URL you entered in **Docks → Custom Browser Docks** starts with `file:///` and uses forward slashes `/` throughout
+- Make sure the path points exactly to `index.html` (including the filename at the end)
+- Windows example: `file:///C:/Users/YourName/Documents/sinewy-obs-bible-verse/index.html`
+- Mac example: `file:///Users/YourName/Documents/sinewy-obs-bible-verse/index.html`
 
-### Overlay visible in OBS but background isn't transparent
+### The verse is showing in the dock but not updating on stream
 
-- In Browser Source properties, confirm **Width: 1920** and **Height: 1080**
-- Do **not** enable a chroma key filter on this source — it's already transparent by CSS
+- Check that **Shutdown source when not visible** is **unticked** in the Browser Source properties
+- Confirm you are using **OBS Studio version 28 or newer** (click **Help → About OBS Studio** to check)
+- Try right-clicking the Browser Source and choosing **Refresh**, then press Show again
 
-### Dock shows blank page
+### Verse text is not loading when I click Lookup
 
-- Ensure the URL in Custom Browser Docks uses the full absolute path starting with `file:///`
-- On Windows, use forward slashes: `file:///C:/path/to/index.html`
-- On macOS/Linux: `file:///Users/yourname/path/to/index.html`
+- Check your internet connection — the lookup needs access to bible-api.com
+- Make sure your reference is formatted correctly, e.g. `John 3:16` not `John3:16`
+- If the service is temporarily unavailable, type the verse text directly into the text box
 
----
+### The background is not transparent in OBS
 
-## Project Structure
-
-```
-sinewy-obs-bible-verse/
-├── LICENSE             MIT licence
-├── README.md           This file
-├── index.html          OBS Dock — operator control panel
-├── overlay.html        OBS Browser Source — stream overlay
-└── assets/
-    ├── app.js          Shared communication layer (BroadcastChannel + localStorage)
-    ├── dock.css        Control panel styles
-    └── overlay.css     Overlay styles (themes, animations, positions)
-```
+- In the Browser Source properties, make sure **Width is 1920** and **Height is 1080**
+- Do **not** apply a Chroma Key filter to this source — it is already transparent
 
 ---
 
-## How It Works
+## Support This Project
 
-**Communication**: The dock and overlay communicate via the [BroadcastChannel API](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel), which works across tabs/pages in the same browser process. OBS 28+ runs all browser sources and docks in a shared Chromium process, so messages pass directly. A `localStorage` polling fallback (80ms interval) handles edge cases and older OBS builds.
+If this plugin has helped your church or ministry, consider buying me a coffee!
+Feature requests from supporters get prioritised.
 
-**Verse Data**: Fetched from [bible-api.com](https://bible-api.com) — a free, open-source Bible API with no authentication required.
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/sinewytech)
 
-**State Persistence**: Display settings are saved to `localStorage` automatically. The overlay re-reads the last known state on load, so refreshing mid-stream restores the visible verse without operator intervention.
+If you find it useful, a ⭐ star on GitHub helps other churches discover the project.
 
 ---
 
 ## Contributing
 
-Pull requests welcome. Open an issue for bugs or feature requests.
+Found a bug or have a feature idea? Open an issue on GitHub — all feedback is welcome. Pull requests are also appreciated.
 
-## License
+---
 
-MIT — see [LICENSE](LICENSE). Free for church use, personal use, and commercial use.
+## Licence
+
+MIT — see [LICENSE](LICENSE).
+
+Free for church use, personal use, and commercial use. You are welcome to modify and redistribute this project as long as you include the original licence file.

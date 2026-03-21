@@ -6,6 +6,16 @@ A lightweight, browser-based Bible verse lower-third for OBS Studio — no insta
 
 ---
 
+## ☕ Support This Project
+
+If this plugin has helped your church or ministry, consider buying me a coffee!
+Feature requests from supporters get prioritised.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/sinewytech)
+
+---
+
+
 ## Features
 
 - Type a reference (e.g. `John 3:16`) and look it up instantly via the free [bible-api.com](https://bible-api.com) API

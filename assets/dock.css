@@ -60,6 +60,33 @@ header h1 {
   letter-spacing: 0.02em;
 }
 
+/* ── Ko-fi support button ────────────────────────────── */
+
+.kofi-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: rgba(201, 168, 76, 0.10);
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  color: rgba(201, 168, 76, 0.55);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  white-space: nowrap;
+  opacity: 0.7;
+  transition: opacity 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.kofi-btn:hover {
+  opacity: 1;
+  background: rgba(201, 168, 76, 0.18);
+  border-color: rgba(201, 168, 76, 0.50);
+  color: #c9a84c;
+}
+
 .status-row {
   display: flex;
   align-items: center;

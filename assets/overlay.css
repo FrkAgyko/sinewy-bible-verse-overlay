@@ -14,34 +14,49 @@ html, body {
   pointer-events: none;
 }
 
-/* ── Container positioning ───────────────────────────── */
+/* ── Fullscreen background layer (image mode only) ───── */
+/* Sits behind everything; the verse card floats above it */
+
+#bg-layer {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#bg-layer.hidden { display: none; }
+
+/* ── Container — positions the card on screen ────────── */
 
 #verse-container {
   position: fixed;
   left: 0;
   right: 0;
-  padding: 0 80px;
+  width: 100%;
   z-index: 9999;
   pointer-events: none;
 }
 
-#verse-container.pos-bottom { bottom: 72px; }
-#verse-container.pos-center { top: 50%; transform: translateY(-50%); }
-#verse-container.pos-top    { top: 72px; }
+#verse-container.pos-bottom { bottom: 0;   padding-bottom: 52px; }
+#verse-container.pos-center { top: 50%;    transform: translateY(-50%); }
+#verse-container.pos-top    { top: 0;      padding-top: 52px; }
 #verse-container.hidden     { display: none; }
 
-/* ── Inner card ──────────────────────────────────────── */
+/* ── Inner card — 95% wide, centered, dynamic height ─── */
 
 #verse-inner {
-  max-width: 1000px;
+  width: 95%;
   margin: 0 auto;
-  padding: 28px 40px 24px;
-  border-radius: 8px;
+  padding: 36px 52px 30px;
+  border-radius: 14px;
   position: relative;
-  /* background set by JS (opacity-aware) */
+  /* background colour set by JS (theme + opacity slider) */
 }
 
-/* ── Accent line (colour driven by --accent-color var) ── */
+/* ── Accent divider line ─────────────────────────────── */
 
 .verse-accent {
   display: block;
@@ -49,106 +64,110 @@ html, body {
   background: linear-gradient(
     90deg,
     transparent,
-    var(--accent-color, #c9a84c) 25%,
-    var(--accent-color, #c9a84c) 75%,
+    var(--accent-color, #c9a84c) 20%,
+    var(--accent-color, #c9a84c) 80%,
     transparent
   );
-  margin: 14px 0;
-  opacity: 0.55;
+  margin: 16px auto;
+  opacity: 0.50;
 }
 
-/* ── Theme: Classic Gold — borders & shadows only ────── */
+/* ── Theme: Classic Gold ─────────────────────────────── */
 
 .theme-gold #verse-inner {
-  border: 1px solid rgba(201, 168, 76, 0.55);
-  border-top: 2px solid #c9a84c;
+  border: 1px solid rgba(201, 168, 76, 0.40);
+  border-top: 2px solid rgba(201, 168, 76, 0.80);
   box-shadow:
-    0 0 0 1px rgba(201, 168, 76, 0.12),
-    0 4px 40px rgba(0, 0, 0, 0.65),
-    inset 0 0 80px rgba(201, 168, 76, 0.04);
+    0 0 0 1px rgba(201, 168, 76, 0.08),
+    0 8px 48px rgba(0, 0, 0, 0.70),
+    inset 0 0 100px rgba(201, 168, 76, 0.03);
   --accent-color: #c9a84c;
 }
 
 .theme-gold #overlay-text {
   color: #f0e6c4;
   font-style: italic;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.75);
 }
 
 .theme-gold #overlay-reference {
   color: #c9a84c;
   font-style: normal;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
 }
 
 /* ── Theme: Clean White ───────────────────────────────── */
 
 .theme-white #verse-inner {
-  border-left: 5px solid #3b82f6;
-  border-radius: 4px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  border-top: 3px solid #3b82f6;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.45);
   --accent-color: #3b82f6;
 }
 
-.theme-white #overlay-text    { color: #1e293b; }
+.theme-white #overlay-text      { color: #1e293b; }
 .theme-white #overlay-reference { color: #3b82f6; font-weight: 700; }
+
 .theme-white .verse-accent {
-  background: linear-gradient(90deg, #e2e8f0, transparent);
-  opacity: 1;
+  background: linear-gradient(90deg, transparent, #3b82f6 20%, #3b82f6 80%, transparent);
+  opacity: 0.35;
 }
 
 /* ── Theme: Dark Minimal ──────────────────────────────── */
 
 .theme-dark #verse-inner {
-  border-top: 3px solid #475569;
-  border-radius: 4px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(71, 85, 105, 0.50);
+  border-top: 2px solid #475569;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.75);
   --accent-color: #475569;
 }
 
 .theme-dark #overlay-text      { color: #e2e8f0; }
-.theme-dark #overlay-reference { color: #64748b; }
+.theme-dark #overlay-reference { color: #94a3b8; }
+
 .theme-dark .verse-accent {
-  background: linear-gradient(90deg, #334155, transparent);
-  opacity: 1;
+  background: linear-gradient(90deg, transparent, #475569 20%, #475569 80%, transparent);
+  opacity: 0.60;
 }
 
-/* ── Theme: Custom — structure only, colours set by JS ── */
+/* ── Theme: Custom — structure only, colours via JS ──── */
 
 .theme-custom #verse-inner {
-  border-radius: 6px;
-  box-shadow: 0 6px 40px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.60);
 }
 
 /* ── Typography ──────────────────────────────────────── */
 
 #overlay-text {
-  line-height: 1.7;
+  line-height: 1.75;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  text-align: center;
 }
 
 #overlay-reference {
-  font-size: 0.78em;
-  font-weight: 700;
-  text-align: right;
+  font-size: 0.75em;
+  font-weight: 600;
+  text-align: center;
+  font-variant: small-caps;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
 /* ── Font sizes ──────────────────────────────────────── */
 
 .fs-sm #overlay-text      { font-size: 1.15rem; }
-.fs-sm #overlay-reference { font-size: 0.80rem; }
+.fs-sm #overlay-reference { font-size: 0.82rem; }
 
 .fs-md #overlay-text      { font-size: 1.40rem; }
-.fs-md #overlay-reference { font-size: 1.05rem; }
+.fs-md #overlay-reference { font-size: 1.00rem; }
 
 .fs-lg #overlay-text      { font-size: 1.70rem; }
-.fs-lg #overlay-reference { font-size: 1.25rem; }
+.fs-lg #overlay-reference { font-size: 1.20rem; }
 
 .fs-xl #overlay-text      { font-size: 2.05rem; }
-.fs-xl #overlay-reference { font-size: 1.50rem; }
+.fs-xl #overlay-reference { font-size: 1.45rem; }
 
 /* ── Animations ──────────────────────────────────────── */
 
@@ -162,7 +181,7 @@ html, body {
 /* Slide up */
 .anim-slide #verse-inner {
   opacity: 0;
-  transform: translateY(22px);
+  transform: translateY(24px);
   transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .anim-slide.visible #verse-inner {
@@ -174,5 +193,5 @@ html, body {
 .pos-center.anim-slide.visible #verse-inner { transform: translateY(0); }
 
 /* None */
-.anim-none #verse-inner { opacity: 0; transition: none; }
-.anim-none.visible #verse-inner { opacity: 1; }
+.anim-none #verse-inner            { opacity: 0; transition: none; }
+.anim-none.visible #verse-inner    { opacity: 1; }

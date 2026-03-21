@@ -14,6 +14,10 @@ A free, open-source tool for OBS Studio that lets you show Bible verses on your 
 
 ## Features
 
+- **Quick Lookup buttons** — one-tap buttons for the most commonly preached books: John, Romans, Psalms, Matthew, Genesis, Proverbs, Isaiah, Hebrews, Acts, and Revelation
+- **Chapter and verse dropdowns** — after selecting a book, chapter and verse dropdowns appear automatically for fast selection without typing
+- **Auto Show toggle** — when enabled, verses automatically appear on the overlay as soon as they are looked up, no need to click Show manually
+- **Auto-scaling font size** — automatically adjusts text size based on verse length so short verses display large and long verses always fit
 - **Smart verse search** — start typing a book name and a dropdown suggests matching books automatically
 - **Instant lookup** — type any reference (e.g. `John 3:16`) and fetch the verse text with one click or press Enter
 - **Editable text** — change, shorten, or add to the verse text before it goes live on stream

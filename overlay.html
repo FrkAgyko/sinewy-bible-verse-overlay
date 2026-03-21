@@ -28,7 +28,7 @@
       const textEl    = document.getElementById('overlay-text');
       const refEl     = document.getElementById('overlay-reference');
 
-      const THEME_CLASSES = ['theme-gold', 'theme-white', 'theme-dark', 'theme-custom'];
+      const THEME_CLASSES = ['theme-gold', 'theme-white', 'theme-dark', 'theme-custom', 'theme-sacred-light'];
       const POS_CLASSES   = ['pos-bottom', 'pos-center', 'pos-top'];
       const SIZE_CLASSES  = ['fs-sm', 'fs-md', 'fs-lg', 'fs-xl'];
       const ANIM_CLASSES  = ['anim-fade', 'anim-slide', 'anim-none'];
@@ -75,12 +75,16 @@
         applyClass(SIZE_CLASSES,  `fs-${state.fontSize}`);
         applyClass(ANIM_CLASSES,  `anim-${state.animation}`);
 
-        // ── Card visibility (custom theme only) ───────────────────────
-        const showCard = state.showCard !== false;
+        // ── Card visibility ───────────────────────────────────────────
+        // sacred-light always hides the card; custom respects the checkbox
+        const showCard = (theme === 'sacred-light') ? false : (state.showCard !== false);
         container.classList.toggle('no-card', !showCard);
 
         // ── Background image (fullscreen layer, independent of card) ──
-        if (bgMode === 'image' && state.bgImage) {
+        if (theme === 'sacred-light') {
+          bgLayer.style.backgroundImage = 'url(assets/bg1.png)';
+          bgLayer.classList.remove('hidden');
+        } else if (bgMode === 'image' && state.bgImage) {
           bgLayer.style.backgroundImage = `url(${state.bgImage})`;
           bgLayer.classList.remove('hidden');
         } else {

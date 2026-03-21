@@ -159,6 +159,25 @@ html, body {
   box-shadow: 0 8px 48px rgba(0, 0, 0, 0.60);
 }
 
+/* ── Theme: Sacred Light ─────────────────────────────── */
+/* Card is always hidden (no-card); bg image set by JS.   */
+/* Text colours defined here override the no-card defaults */
+
+.theme-sacred-light #overlay-text {
+  color: #ffffff;
+  font-style: italic;
+  text-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.75),
+    0 1px 4px  rgba(0, 0, 0, 0.55);
+}
+
+.theme-sacred-light #overlay-reference {
+  color: #e8c97a;
+  font-style: normal;
+  letter-spacing: 0.12em;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.70);
+}
+
 /* ── Typography ──────────────────────────────────────── */
 
 #overlay-text {

@@ -26,6 +26,23 @@
     </div>
   </header>
 
+  <!-- Quick Lookup -->
+  <div class="card">
+    <div class="card-title">Quick Lookup</div>
+    <div class="quick-books">
+      <button class="btn-book" data-book="John">John</button>
+      <button class="btn-book" data-book="Romans">Romans</button>
+      <button class="btn-book" data-book="Psalms">Psalms</button>
+      <button class="btn-book" data-book="Matthew">Matthew</button>
+      <button class="btn-book" data-book="Genesis">Genesis</button>
+      <button class="btn-book" data-book="Proverbs">Proverbs</button>
+      <button class="btn-book" data-book="Isaiah">Isaiah</button>
+      <button class="btn-book" data-book="Hebrews">Hebrews</button>
+      <button class="btn-book" data-book="Acts">Acts</button>
+      <button class="btn-book" data-book="Revelation">Revelation</button>
+    </div>
+  </div>
+
   <!-- Lookup -->
   <div class="card">
     <div class="card-title">Verse Lookup</div>
@@ -46,8 +63,16 @@
         <option value="asv">ASV</option>
       </select>
     </div>
+    <div id="cv-row" class="cv-row hidden">
+      <select id="chapter-sel" title="Chapter"></select>
+      <select id="verse-sel" title="Verse"></select>
+    </div>
     <div class="lookup-actions">
       <button class="btn btn-lookup" id="btn-lookup">Lookup</button>
+      <label class="auto-show-label" title="Automatically show verse on stream after lookup">
+        <input type="checkbox" id="auto-show-cb" checked>
+        <span>Auto Show</span>
+      </label>
       <button class="btn btn-random" id="btn-random">🎲 Random</button>
     </div>
     <div id="random-menu" class="random-menu hidden">
@@ -202,6 +227,10 @@
   // ── DOM refs ──────────────────────────────────────────
   const refInput        = document.getElementById('ref-input');
   const autocompleteList= document.getElementById('autocomplete-list');
+  const chapterSel      = document.getElementById('chapter-sel');
+  const verseSel        = document.getElementById('verse-sel');
+  const cvRow           = document.getElementById('cv-row');
+  const autoShowCb      = document.getElementById('auto-show-cb');
   const translationSel  = document.getElementById('translation');
   const btnLookup       = document.getElementById('btn-lookup');
   const btnRandom       = document.getElementById('btn-random');
@@ -243,6 +272,7 @@
   let currentBgImage    = null; // base64 data URL or null
   let bgMode            = 'color';
   let isItalic          = false;
+  let selectedBook      = null; // book name chosen via quick button or autocomplete
   let acItems           = [];   // current autocomplete results
   let acIndex           = -1;   // active autocomplete index
 
@@ -266,6 +296,7 @@
   fontSel.value        = saved.font        || 'Open Sans';
   isItalic             = saved.italic === true;
   btnItalic.classList.toggle('active', isItalic);
+  autoShowCb.checked   = saved.autoShow !== false; // default true
   opacitySlider.value  = saved.opacity     !== undefined ? saved.opacity : 90;
   opacityValue.textContent = opacitySlider.value + '%';
 
@@ -362,6 +393,7 @@
       animation:    animationSel.value,
       font:         fontSel.value,
       italic:       isItalic,
+      autoShow:     autoShowCb.checked,
       opacity:      parseInt(opacitySlider.value, 10),
       bgMode,
       bgImage:      currentBgImage,
@@ -397,6 +429,45 @@
     });
   }
 
+  // ── Book / Chapter / Verse selectors ─────────────────
+
+  function populateChapters(bookName) {
+    const entry = BibleApp.BIBLE_BOOKS.find(([name]) => name === bookName);
+    if (!entry) return;
+    chapterSel.innerHTML = '';
+    for (let i = 1; i <= entry[2]; i++) {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = i;
+      chapterSel.appendChild(opt);
+    }
+    populateVerses();
+  }
+
+  function populateVerses() {
+    verseSel.innerHTML = '';
+    for (let i = 1; i <= 50; i++) {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = i;
+      verseSel.appendChild(opt);
+    }
+  }
+
+  function selectBook(bookName) {
+    selectedBook = bookName;
+    document.querySelectorAll('.btn-book').forEach(b =>
+      b.classList.toggle('active', b.dataset.book === bookName)
+    );
+    populateChapters(bookName);
+    cvRow.classList.remove('hidden');
+    updateRefFromDropdowns();
+    chapterSel.focus();
+  }
+
+  function updateRefFromDropdowns() {
+    if (!selectedBook) return;
+    refInput.value = `${selectedBook} ${chapterSel.value}:${verseSel.value}`;
+  }
+
   // ── Autocomplete ──────────────────────────────────────
 
   function showAutocomplete(items) {
@@ -430,15 +501,8 @@
   function selectAutocomplete(idx) {
     const book = acItems[idx];
     if (!book) return;
-    // Insert book name into input, preserving any chapter:verse already typed
-    const current = refInput.value;
-    const spaceIdx = current.indexOf(' ');
-    const rest = spaceIdx >= 0 ? current.slice(spaceIdx) : '';
-    refInput.value = book + rest;
     hideAutocomplete();
-    refInput.focus();
-    // Move cursor to end
-    refInput.selectionStart = refInput.selectionEnd = refInput.value.length;
+    selectBook(book);
   }
 
   function moveAutocomplete(dir) {
@@ -451,6 +515,12 @@
 
   function handleRefInput() {
     const val = refInput.value;
+    // If cleared, reset book state and hide chapter/verse row
+    if (!val.trim()) {
+      selectedBook = null;
+      cvRow.classList.add('hidden');
+      document.querySelectorAll('.btn-book').forEach(b => b.classList.remove('active'));
+    }
     // Only autocomplete if we're still typing the book name (no chapter yet)
     const hasChapter = /\d+:\d+/.test(val) || /^\S+\s+\d+$/.test(val);
     if (!val.trim() || hasChapter) {
@@ -517,7 +587,10 @@
     enableControls(true);
     setStatus(`Random: ${result.reference}`, 'success');
 
-    if (overlayState === 'live') BibleApp.send(getCurrentState('show'));
+    if (autoShowCb.checked || overlayState === 'live') {
+      BibleApp.send(getCurrentState('show'));
+      if (autoShowCb.checked) setDotState('live');
+    }
   }
 
   // ── Lookup ────────────────────────────────────────────
@@ -557,6 +630,11 @@
 
     enableControls(true);
     setStatus(`Loaded: ${result.reference}`, 'success');
+
+    if (autoShowCb.checked) {
+      BibleApp.send(getCurrentState('show'));
+      setDotState('live');
+    }
   }
 
   // ── Next / Previous ───────────────────────────────────
@@ -598,6 +676,23 @@
   }
 
   // ── Event listeners ───────────────────────────────────
+
+  // Quick book buttons
+  document.querySelectorAll('.btn-book').forEach(btn =>
+    btn.addEventListener('click', () => selectBook(btn.dataset.book))
+  );
+
+  // Chapter dropdown → repopulate verses and sync ref input
+  chapterSel.addEventListener('change', () => {
+    populateVerses();
+    updateRefFromDropdowns();
+  });
+
+  // Verse dropdown → sync ref input, auto-lookup if Auto Show is on
+  verseSel.addEventListener('change', () => {
+    updateRefFromDropdowns();
+    if (autoShowCb.checked) doLookup();
+  });
 
   btnLookup.addEventListener('click', () => doLookup());
 

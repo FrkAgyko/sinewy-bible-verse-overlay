@@ -8,7 +8,11 @@ A free, open-source tool for OBS Studio that lets you show Bible verses on your 
 
 ---
 
-<!-- Add screenshots here -->
+## Screenshots
+
+![Control Panel](screenshots/control-panel.png)
+![Overlay](screenshots/overlay.png)
+![Live in OBS](screenshots/obs-live.png)
 
 ---
 

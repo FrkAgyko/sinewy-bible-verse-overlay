@@ -164,29 +164,41 @@
         applyClass(SIZE_CLASSES,  `fs-${state.fontSize}`);
         applyClass(ANIM_CLASSES,  `anim-${state.animation}`);
 
+        // ── Determine if a background image should fill the verse box ─
+        const useImageBg = (theme === 'sacred-light') ||
+                           (bgMode === 'image' && !!state.bgImage);
+
         // ── Card visibility ───────────────────────────────────────────
-        // sacred-light always hides the card; custom respects the checkbox
-        const showCard = (theme === 'sacred-light') ? false : (state.showCard !== false);
+        // Image background always shows the card (it fills the verse box).
+        // Custom theme without an image respects the card checkbox.
+        const showCard = useImageBg ? true : (state.showCard !== false);
         container.classList.toggle('no-card', !showCard);
 
-        // ── Background image (fullscreen layer, independent of card) ──
-        if (theme === 'sacred-light') {
-          bgLayer.style.backgroundImage = 'url(assets/bg1.png)';
-          bgLayer.classList.remove('hidden');
-        } else if (bgMode === 'image' && state.bgImage) {
-          bgLayer.style.backgroundImage = `url(${state.bgImage})`;
-          bgLayer.classList.remove('hidden');
-        } else {
-          bgLayer.style.backgroundImage = '';
-          bgLayer.classList.add('hidden');
-        }
+        // ── bg-layer is never used for fullscreen images any more ─────
+        bgLayer.style.backgroundImage = '';
+        bgLayer.classList.add('hidden');
 
-        // ── Card background ───────────────────────────────────────────
-        if (showCard) {
+        // ── Card / inner background ───────────────────────────────────
+        // Clear all inline bg properties first to avoid stale values
+        // when switching between image and colour modes.
+        inner.style.background         = '';
+        inner.style.backgroundImage    = '';
+        inner.style.backgroundSize     = '';
+        inner.style.backgroundPosition = '';
+        inner.style.backgroundRepeat   = '';
+        inner.style.backgroundColor    = '';
+
+        if (useImageBg) {
+          const imgUrl = (theme === 'sacred-light') ? 'assets/bg1.png' : state.bgImage;
+          inner.style.backgroundImage    = `url(${imgUrl})`;
+          inner.style.backgroundSize     = 'cover';
+          inner.style.backgroundPosition = 'center';
+          inner.style.backgroundRepeat   = 'no-repeat';
+        } else if (showCard) {
           const bgHex = theme === 'custom' ? colors.bg : (THEME_BG[theme] || '#080810');
           inner.style.background = hexToRgba(bgHex, opacity);
         } else {
-          inner.style.background = 'transparent';
+          inner.style.backgroundColor = 'transparent';
         }
 
         // ── Custom text colours ───────────────────────────────────────

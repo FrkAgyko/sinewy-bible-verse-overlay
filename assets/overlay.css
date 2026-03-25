@@ -62,11 +62,12 @@ html, body {
   margin: 0;
   padding: 36px 52px 30px;
   border-radius: 14px;
+  overflow: hidden; /* clips background images to border-radius */
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* background colour set by JS (theme + opacity slider) */
+  /* background set by JS (theme colour, opacity, or image) */
 }
 
 /* ── No-card mode: text floats directly on background ── */
@@ -174,8 +175,8 @@ html, body {
 }
 
 /* ── Theme: Sacred Light ─────────────────────────────── */
-/* Card is always hidden (no-card); bg image set by JS.   */
-/* Text colours defined here override the no-card defaults */
+/* Background image is applied to #verse-inner by JS so   */
+/* it fills only the verse box, not the full screen.      */
 
 .theme-sacred-light #overlay-text {
   color: #ffffff;

@@ -59,11 +59,8 @@
           <option value="msg" data-language="english">MSG — The Message</option>
           <option value="csb17" data-language="english">CSB — Christian Standard Bible</option>
           <option value="web" data-language="english">WEB — World English Bible</option>
-          <option value="webbe" data-language="english">WEBBE — World English Bible British</option>
           <option value="asv" data-language="english">ASV — American Standard Version</option>
-          <option value="bbe" data-language="english">BBE — Bible in Basic English</option>
-          <option value="darby" data-language="english">DBY — Darby Translation</option>
-          <option value="ylt" data-language="english">YLT — Young's Literal (NT Only)</option>
+          <option value="ylt" data-language="english">YLT — Young's Literal Translation</option>
           <option value="dra" data-language="english">DRB — Douay-Rheims</option>
           <option value="rsv" data-language="english">RSV — Revised Standard Version</option>
           <option value="net" data-language="english">NET — New English Translation</option>
@@ -390,6 +387,8 @@
 
   const saved = BibleApp.loadSettings();
   translationSel.value = saved.translation || 'kjv';
+  // Saved translation may no longer exist in the dropdown (e.g. removed codes)
+  if (!translationSel.value) translationSel.value = 'kjv';
   themeSel.value       = saved.theme       || 'gold';
   positionSel.value    = saved.position    || 'bottom';
   fontSizeSel.value    = saved.fontSize    || 'md';

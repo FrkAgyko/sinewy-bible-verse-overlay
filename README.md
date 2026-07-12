@@ -209,7 +209,7 @@ You can control the overlay from your keyboard without clicking. These shortcuts
 
 Verse text is fetched from [Bolls.life](https://bolls.life). Over 50 translations are available across 9 languages.
 
-### English (26 translations)
+### English (23 translations)
 
 | Translation | Full Name | Notes |
 |-------------|-----------|-------|
@@ -224,11 +224,8 @@ Verse text is fetched from [Bolls.life](https://bolls.life). Over 50 translation
 | MSG | The Message | Contemporary paraphrase |
 | CSB | Christian Standard Bible | Balance of accuracy and readability |
 | WEB | World English Bible | Modern language. Completely free to use |
-| WEBBE | World English Bible (British) | British English edition |
 | ASV | American Standard Version | Classic 1901 translation |
-| BBE | Bible in Basic English | Simple vocabulary |
-| DBY | Darby Translation | Literal 19th-century translation |
-| YLT | Young's Literal Translation | NT only |
+| YLT | Young's Literal Translation | Literal 1898 translation |
 | DRB | Douay-Rheims | Catholic translation |
 | RSV | Revised Standard Version | Mid-20th century revision of ASV |
 | NET | New English Translation | With extensive translators' notes |

@@ -10,7 +10,6 @@ const BibleApp = (() => {
   const API_BASE      = 'https://bolls.life';
   const TRANSLATION_MAP = {
     'kjv': 'KJV', 'asv': 'ASV', 'web': 'WEB',
-    'webbe': 'WEBBE', 'bbe': 'BBE', 'darby': 'DARBY',
     'ylt': 'YLT', 'dra': 'DRB', 'nkjv': 'NKJV',
     'niv': 'NIV', 'niv2011': 'NIV2011', 'esv': 'ESV',
     'nlt': 'NLT', 'nasb': 'NASB', 'rsv': 'RSV',
@@ -192,7 +191,7 @@ const BibleApp = (() => {
       } else {
         // Single verse
         const url = `${API_BASE}/get-verse/${translationCode}/${bookId}/${chapter}/${verse}/`;
-        const res = await fetch(url);
+        const res = await _fetchWithTimeout(url);
         if (!res.ok) {
           if (res.status === 404) {
             return { error: `"${reference}" not found. Check the book name, chapter and verse.` };
@@ -237,9 +236,11 @@ const BibleApp = (() => {
   function buildDisplayText(raw) {
     if (!raw) return '';
     return raw
+      .replace(/<sup[^>]*>[\s\S]*?<\/sup>/gi, '') // Strip footnotes/margin notes incl. content
       .replace(/<S>\d+<\/S>/g, '')  // Strip Strong's numbers
       .replace(/<[^>]+>/g, '')       // Strip all HTML tags
       .replace(/\n\d+\s*/g, ' ')    // Strip verse numbers
+      .replace(/\s+([.,;:!?])/g, '$1') // No space before punctuation (left by stripped tags)
       .replace(/\s+/g, ' ')          // Collapse whitespace
       .trim();
   }
@@ -249,7 +250,7 @@ const BibleApp = (() => {
     if (_verseCountCache[cacheKey] !== undefined) return _verseCountCache[cacheKey];
     try {
       const url = `${API_BASE}/get-chapter/${translationCode}/${bookId}/${chapter}/`;
-      const res = await fetch(url);
+      const res = await _fetchWithTimeout(url);
       if (!res.ok) return 50;
       const data = await res.json();
       const count = Array.isArray(data) ? data.length : 50;
@@ -265,7 +266,7 @@ const BibleApp = (() => {
     if (_searchCache[key]) return _searchCache[key];
     try {
       const url = `${API_BASE}/search/${translationCode}/${encodeURIComponent(query.trim())}/`;
-      const res = await fetch(url);
+      const res = await _fetchWithTimeout(url);
       if (!res.ok) return { error: 'Search unavailable. Check your connection.' };
       const data = await res.json();
       if (!Array.isArray(data)) return { error: 'Unexpected response from search API.' };
@@ -273,12 +274,7 @@ const BibleApp = (() => {
         bookId:  v.book,
         chapter: v.chapter,
         verse:   v.verse,
-        text:    v.text ? v.text
-          .replace(/<S>\d+<\/S>/g, '')
-          .replace(/<[^>]+>/g, '')
-          .replace(/([a-zA-Z])\d+/g, '$1')
-          .replace(/\s+/g, ' ')
-          .trim() : '',
+        text:    buildDisplayText(v.text),
       }));
       _searchCache[key] = results;
       return results;
